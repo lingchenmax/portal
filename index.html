@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的工作台</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 登录界面 -->
+    <div id="login-view" class="hidden">
+        <div class="login-card">
+            <h2>登录工作台</h2>
+            <form id="login-form">
+                <input type="email" id="email" placeholder="邮箱" required>
+                <input type="password" id="password" placeholder="密码" required>
+                <button type="submit" id="login-btn">登录</button>
+            </form>
+            <p id="login-error" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- 门户主界面 -->
+    <div id="portal-view" class="hidden">
+        <!-- 顶栏 -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button id="menu-toggle" class="icon-btn">☰</button>
+                <h1>工作台</h1>
+            </div>
+            <div class="topbar-right">
+                <button id="theme-toggle" class="icon-btn" title="切换主题">🌓</button>
+                <span id="user-email" class="user-email"></span>
+                <button id="logout-btn" class="text-btn">退出</button>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- 遮罩层（移动端侧边栏展开时显示） -->
+            <div id="sidebar-overlay" class="hidden"></div>
+
+            <!-- 左侧菜单 -->
+            <aside id="sidebar" class="sidebar">
+                <div id="sidebar-menu"></div>
+            </aside>
+
+            <!-- 右侧内容 -->
+            <main class="content">
+                <div class="welcome-section">
+                    <h2>欢迎回来，<span id="display-name">用户</span></h2>
+                    <p>点击下方卡片或左侧菜单快速启动应用</p>
+                </div>
+                
+                <!-- 最近访问区（预留） -->
+                <div id="recent-section" class="hidden">
+                    <h3>最近访问</h3>
+                    <div class="card-grid" id="recent-grid"></div>
+                </div>
+
+                <!-- 所有应用卡片 -->
+                <div id="apps-container">
+                    <!-- 动态渲染 -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 内嵌弹窗 (用于 iframe 模式) -->
+    <div id="iframe-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">应用</h3>
+                <button id="modal-close" class="icon-btn">✕</button>
+            </div>
+            <div class="modal-body">
+                <iframe id="modal-iframe" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入 Supabase SDK 和 主逻辑 -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>
