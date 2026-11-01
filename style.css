@@ -160,3 +160,48 @@ body {
     #menu-toggle { display: none; }
     #sidebar-overlay { display: none !important; }
 }
+
+/* ================= 新增：折叠功能样式 ================= */
+
+/* 侧边栏收起状态（桌面端） */
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    border-right: none;
+}
+
+/* 给侧边栏和箭头加上过渡动画 */
+.sidebar { transition: width 0.3s ease, transform 0.3s ease; }
+
+/* 可点击的分组标题（左侧菜单和右侧卡片共用） */
+.menu-group-title, .app-group-section h3 {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.menu-group-title:hover, .app-group-section h3:hover {
+    color: var(--primary-color);
+}
+
+/* 折叠箭头 */
+.arrow {
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+}
+
+/* 当箭头处于折叠状态时，旋转 -90 度 */
+.arrow.collapsed {
+    transform: rotate(-90deg);
+}
+
+/* 隐藏状态 */
+.hidden-group {
+    display: none !important;
+}
