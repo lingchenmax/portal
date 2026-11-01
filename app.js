@@ -72,7 +72,7 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 async function loadUserData() {
     // 1. 加载用户偏好
     const { data: prefs } = await supabase.from('user_prefs').select('*').maybeSingle();
-    currentPrefs = prefs || { theme: 'light', sidebar_collapsed: {} };
+    currentPrefs = prefs || { theme: 'light', sidebar_collapsed: {}, content_collapsed: {} };
     
     applyTheme(currentPrefs.theme);
 
@@ -101,18 +101,39 @@ function renderSidebar(apps) {
         const groupDiv = document.createElement('div');
         groupDiv.className = 'menu-group';
         
+        // 检查数据库中是否记录了折叠状态
+        const isCollapsed = currentPrefs?.sidebar_collapsed?.[groupName] === true;
+        
         const titleDiv = document.createElement('div');
         titleDiv.className = 'menu-group-title';
-        titleDiv.textContent = groupName;
-        groupDiv.appendChild(titleDiv);
+        // 加上箭头和组名
+        titleDiv.innerHTML = `<span class="arrow ${isCollapsed ? 'collapsed' : ''}">▼</span> ${groupName}`;
+        
+        const itemsContainer = document.createElement('div');
+        itemsContainer.className = `menu-group-items ${isCollapsed ? 'hidden-group' : ''}`;
 
         groupApps.forEach(app => {
             const item = document.createElement('a');
             item.className = 'menu-item';
             item.textContent = `${app.icon} ${app.name}`;
             item.onclick = () => openApp(app);
-            groupDiv.appendChild(item);
+            itemsContainer.appendChild(item);
         });
+
+        // 点击标题切换折叠状态
+        titleDiv.onclick = () => {
+            const nowCollapsed = !itemsContainer.classList.contains('hidden-group');
+            itemsContainer.classList.toggle('hidden-group');
+            titleDiv.querySelector('.arrow').classList.toggle('collapsed', nowCollapsed);
+            
+            // 存入云存档
+            const sidebarPrefs = currentPrefs?.sidebar_collapsed || {};
+            sidebarPrefs[groupName] = nowCollapsed;
+            savePrefs({ sidebar_collapsed: sidebarPrefs });
+        };
+
+        groupDiv.appendChild(titleDiv);
+        groupDiv.appendChild(itemsContainer);
         sidebarMenu.appendChild(groupDiv);
     }
 }
@@ -130,12 +151,15 @@ function renderContent(apps) {
         const section = document.createElement('div');
         section.className = 'app-group-section';
         
+        // 检查数据库中是否记录了折叠状态
+        const isCollapsed = currentPrefs?.content_collapsed?.[groupName] === true;
+
         const title = document.createElement('h3');
-        title.textContent = groupName;
+        title.innerHTML = `<span class="arrow ${isCollapsed ? 'collapsed' : ''}">▼</span> ${groupName}`;
         section.appendChild(title);
 
         const grid = document.createElement('div');
-        grid.className = 'card-grid';
+        grid.className = `card-grid ${isCollapsed ? 'hidden-group' : ''}`;
 
         groupApps.forEach(app => {
             const card = document.createElement('div');
@@ -149,6 +173,19 @@ function renderContent(apps) {
             `;
             grid.appendChild(card);
         });
+
+        // 点击标题切换折叠状态
+        title.onclick = () => {
+            const nowCollapsed = !grid.classList.contains('hidden-group');
+            grid.classList.toggle('hidden-group');
+            title.querySelector('.arrow').classList.toggle('collapsed', nowCollapsed);
+
+            // 存入云存档
+            const contentPrefs = currentPrefs?.content_collapsed || {};
+            contentPrefs[groupName] = nowCollapsed;
+            savePrefs({ content_collapsed: contentPrefs });
+        };
+
         section.appendChild(grid);
         appsContainer.appendChild(section);
     }
@@ -198,10 +235,16 @@ async function savePrefs(patch) {
     currentPrefs = { ...currentPrefs, ...patch };
 }
 
-// 移动端侧边栏控制
+// 移动端侧边栏控制 & 桌面端侧边栏收起
 menuToggle.addEventListener('click', () => {
-    sidebar.classList.add('open');
-    sidebarOverlay.classList.remove('hidden');
+    if (window.innerWidth <= 768) {
+        // 手机端逻辑：滑出覆盖
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.remove('hidden');
+    } else {
+        // 电脑端逻辑：整条侧边栏收起/展开
+        sidebar.classList.toggle('collapsed');
+    }
 });
 
 sidebarOverlay.addEventListener('click', () => {
