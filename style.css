@@ -157,7 +157,7 @@ body {
 }
 
 @media (min-width: 769px) {
-    #menu-toggle { display: none; }
+    /* #menu-toggle { display: none; } */
     #sidebar-overlay { display: none !important; }
 }
 
