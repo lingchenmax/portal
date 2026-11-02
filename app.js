@@ -105,17 +105,12 @@ function getIconHtml(iconStr, isSidebar = false) {
 // 渲染左侧菜单
 function renderSidebar(apps) {
     const groups = {};
-    groupApps.forEach(app => {
-            const item = document.createElement('a');
-            item.className = 'menu-item';
-            
-            // 左侧菜单为了清爽，如果是图片链接就不显示图片，只显示名字；如果是Emoji就显示
-            const iconPrefix = app.icon && !app.icon.startsWith('http') ? `${app.icon} ` : '';
-            item.innerHTML = `${iconPrefix}${app.name}`; 
-            
-            item.onclick = () => openApp(app);
-            itemsContainer.appendChild(item);
-        });
+    
+    // ✅ 补回丢失的分组逻辑
+    apps.forEach(app => {
+        if (!groups[app.group_name]) groups[app.group_name] = [];
+        groups[app.group_name].push(app);
+    });
 
     sidebarMenu.innerHTML = '';
     for (const [groupName, groupApps] of Object.entries(groups)) {
@@ -136,7 +131,14 @@ function renderSidebar(apps) {
         groupApps.forEach(app => {
             const item = document.createElement('a');
             item.className = 'menu-item';
-            item.textContent = `${app.icon} ${app.name}`;
+            
+            // ✅ 左侧菜单为了清爽，如果是图片链接就不显示图片，只显示名字；如果是Emoji就显示
+            let iconPrefix = '';
+            if (app.icon && !String(app.icon).startsWith('http')) {
+                iconPrefix = `${app.icon} `;
+            }
+            item.innerHTML = `${iconPrefix}${app.name}`; 
+            
             item.onclick = () => openApp(app);
             itemsContainer.appendChild(item);
         });
@@ -162,19 +164,12 @@ function renderSidebar(apps) {
 // 渲染右侧卡片
 function renderContent(apps) {
     const groups = {};
-    groupApps.forEach(app => {
-            const card = document.createElement('div');
-            card.className = 'app-card';
-            card.onclick = () => openApp(app);
-            
-            // 使用辅助函数渲染图标
-            card.innerHTML = `
-                <div class="card-icon-wrapper">${getIconHtml(app.icon)}</div>
-                <div class="app-name">${app.name}</div>
-                <div class="app-desc">${app.description || '暂无描述'}</div>
-            `;
-            grid.appendChild(card);
-        });
+    
+    // ✅ 补回丢失的分组逻辑
+    apps.forEach(app => {
+        if (!groups[app.group_name]) groups[app.group_name] = [];
+        groups[app.group_name].push(app);
+    });
 
     appsContainer.innerHTML = '';
     for (const [groupName, groupApps] of Object.entries(groups)) {
@@ -196,8 +191,9 @@ function renderContent(apps) {
             card.className = 'app-card';
             card.onclick = () => openApp(app);
             
+            // ✅ 使用辅助函数渲染图标
             card.innerHTML = `
-                <div class="app-icon">${app.icon || '📦'}</div>
+                <div class="card-icon-wrapper">${getIconHtml(app.icon)}</div>
                 <div class="app-name">${app.name}</div>
                 <div class="app-desc">${app.description || '暂无描述'}</div>
             `;
