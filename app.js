@@ -91,12 +91,15 @@ async function loadUserData() {
 // 新增一个辅助函数，用来区分图片和文字
 function getIconHtml(iconStr, isSidebar = false) {
     if (!iconStr) return '📦';
+    
+    // 强制转成字符串再判断
+    const iconString = String(iconStr);
     // 如果是网址，就渲染成图片
-    if (iconStr.startsWith('http://') || iconStr.startsWith('https://')) {
-        return `<img src="${iconStr}" class="app-icon-img" alt="icon">`;
+    if (iconString.startsWith('http://') || iconString.startsWith('https://')) {
+        return `<img src="${iconString}" class="app-icon-img" alt="icon" onerror="this.outerHTML='📦'">`;
     }
     // 如果是左侧菜单，且是 Emoji，就照常显示
-    return iconStr;
+    return iconString;
 }
 
 // 渲染左侧菜单
