@@ -88,13 +88,31 @@ async function loadUserData() {
     renderContent(currentApps);
 }
 
+// 新增一个辅助函数，用来区分图片和文字
+function getIconHtml(iconStr, isSidebar = false) {
+    if (!iconStr) return '📦';
+    // 如果是网址，就渲染成图片
+    if (iconStr.startsWith('http://') || iconStr.startsWith('https://')) {
+        return `<img src="${iconStr}" class="app-icon-img" alt="icon">`;
+    }
+    // 如果是左侧菜单，且是 Emoji，就照常显示
+    return iconStr;
+}
+
 // 渲染左侧菜单
 function renderSidebar(apps) {
     const groups = {};
-    apps.forEach(app => {
-        if (!groups[app.group_name]) groups[app.group_name] = [];
-        groups[app.group_name].push(app);
-    });
+    groupApps.forEach(app => {
+            const item = document.createElement('a');
+            item.className = 'menu-item';
+            
+            // 左侧菜单为了清爽，如果是图片链接就不显示图片，只显示名字；如果是Emoji就显示
+            const iconPrefix = app.icon && !app.icon.startsWith('http') ? `${app.icon} ` : '';
+            item.innerHTML = `${iconPrefix}${app.name}`; 
+            
+            item.onclick = () => openApp(app);
+            itemsContainer.appendChild(item);
+        });
 
     sidebarMenu.innerHTML = '';
     for (const [groupName, groupApps] of Object.entries(groups)) {
@@ -141,10 +159,19 @@ function renderSidebar(apps) {
 // 渲染右侧卡片
 function renderContent(apps) {
     const groups = {};
-    apps.forEach(app => {
-        if (!groups[app.group_name]) groups[app.group_name] = [];
-        groups[app.group_name].push(app);
-    });
+    groupApps.forEach(app => {
+            const card = document.createElement('div');
+            card.className = 'app-card';
+            card.onclick = () => openApp(app);
+            
+            // 使用辅助函数渲染图标
+            card.innerHTML = `
+                <div class="card-icon-wrapper">${getIconHtml(app.icon)}</div>
+                <div class="app-name">${app.name}</div>
+                <div class="app-desc">${app.description || '暂无描述'}</div>
+            `;
+            grid.appendChild(card);
+        });
 
     appsContainer.innerHTML = '';
     for (const [groupName, groupApps] of Object.entries(groups)) {
