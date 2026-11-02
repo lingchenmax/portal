@@ -217,7 +217,7 @@ body {
 .app-icon-img {
     width: 48px;
     height: 48px;
-    border-radius: 8px; /* 圆角 */
-    object-fit: cover; /* 保证图片不变形 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    object-fit: cover; /* 必须加上：防止图片变形 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 可选：加一点淡淡的高级阴影 */
 }
