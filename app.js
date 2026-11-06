@@ -80,26 +80,20 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 async function loadUserData() {
     // 1. 加载用户偏好
     const { data: prefs } = await supabase.from('user_prefs').select('*').maybeSingle();
-    // 辅助判断
-    console.log('查询到的角色数据:', roleData);
-    if (roleError) console.error('查询角色报错:', roleError);
-
-    if (roleData?.role === 'admin') {
-        adminBtn.classList.remove('hidden');
-    } else {
-        adminBtn.classList.add('hidden');
-    }
-    
     currentPrefs = prefs || { theme: 'light', sidebar_collapsed: {}, content_collapsed: {} };
     
     applyTheme(currentPrefs.theme);
 
-    // 2. 判断是否为管理员
-    const { data: roleData } = await supabase.from('user_roles').select('role').maybeSingle();
-    if (roleData?.role === 'admin') {
-        adminBtn.classList.remove('hidden');
+    // 2. 判断是否为管理员 (注意先后顺序)
+    const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').maybeSingle();
+    
+    // 加一行日志方便以后调试
+    console.log('当前账号的角色数据:', roleData); 
+
+    if (roleData && roleData.role === 'admin') {
+        adminBtn.classList.remove('hidden'); // 是管理员，显示按钮
     } else {
-        adminBtn.classList.add('hidden');
+        adminBtn.classList.add('hidden');    // 不是管理员，隐藏按钮
     }
 
     // 3. 加载应用列表（RLS 会自动过滤掉无权限的）
