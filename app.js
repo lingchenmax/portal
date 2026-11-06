@@ -80,6 +80,16 @@ supabase.auth.onAuthStateChange(async (event, session) => {
 async function loadUserData() {
     // 1. 加载用户偏好
     const { data: prefs } = await supabase.from('user_prefs').select('*').maybeSingle();
+    // 辅助判断
+    console.log('查询到的角色数据:', roleData);
+    if (roleError) console.error('查询角色报错:', roleError);
+
+    if (roleData?.role === 'admin') {
+        adminBtn.classList.remove('hidden');
+    } else {
+        adminBtn.classList.add('hidden');
+    }
+    
     currentPrefs = prefs || { theme: 'light', sidebar_collapsed: {}, content_collapsed: {} };
     
     applyTheme(currentPrefs.theme);
