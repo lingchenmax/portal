@@ -221,3 +221,61 @@ body {
     object-fit: cover; /* 必须加上：防止图片变形 */
     box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 可选：加一点淡淡的高级阴影 */
 }
+
+/* ================= 管理面板样式 ================= */
+.admin-modal-content {
+    width: 95%; max-width: 1000px; height: 85vh;
+}
+.admin-body {
+    display: flex; flex: 1; overflow: hidden;
+}
+
+/* 左侧表单区 */
+.admin-form-container {
+    width: 350px; padding: 20px; border-right: 1px solid var(--border-color);
+    overflow-y: auto; background: var(--bg-color);
+}
+.admin-form-container h4 { margin-bottom: 15px; }
+.form-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 5px; }
+.form-group label { font-size: 13px; color: #888; }
+.form-group input, .form-group select, .form-group textarea {
+    padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px;
+    background: var(--card-bg); color: var(--text-color); font-family: inherit;
+}
+.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+.primary-btn {
+    flex: 1; padding: 10px; background: var(--primary-color); color: white;
+    border: none; border-radius: 6px; cursor: pointer; font-weight: bold;
+}
+
+/* 右侧列表区 */
+.admin-list-container {
+    flex: 1; padding: 20px; overflow-y: auto; background: var(--card-bg);
+}
+.admin-list-container h4 { margin-bottom: 15px; }
+.admin-list-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; border: 1px solid var(--border-color); border-radius: 8px;
+    margin-bottom: 10px; background: var(--bg-color); transition: transform 0.2s;
+}
+.admin-list-item:hover { transform: translateX(5px); }
+.admin-item-info { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+.admin-item-icon { font-size: 20px; width: 24px; text-align: center; }
+.admin-item-icon img { width: 24px; height: 24px; border-radius: 4px; object-fit: cover; }
+.admin-item-text { display: flex; flex-direction: column; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.admin-item-name { font-weight: bold; font-size: 14px; }
+.admin-item-meta { font-size: 12px; color: #888; }
+.admin-item-actions { display: flex; gap: 8px; }
+.admin-btn-edit, .admin-btn-delete {
+    background: none; border: 1px solid var(--border-color); padding: 4px 8px;
+    border-radius: 4px; cursor: pointer; font-size: 12px; color: var(--text-color);
+}
+.admin-btn-edit:hover { border-color: var(--primary-color); color: var(--primary-color); }
+.admin-btn-delete:hover { border-color: #ff3b30; color: #ff3b30; }
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .admin-body { flex-direction: column; overflow-y: auto; }
+    .admin-form-container { width: 100%; border-right: none; border-bottom: 1px solid var(--border-color); }
+    .admin-list-container { overflow-y: visible; }
+}

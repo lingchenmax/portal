@@ -33,10 +33,11 @@
                 <h1>工作台</h1>
             </div>
             <div class="topbar-right">
-                <button id="theme-toggle" class="icon-btn" title="切换主题">🌓</button>
-                <span id="user-email" class="user-email"></span>
-                <button id="logout-btn" class="text-btn">退出</button>
-            </div>
+				<button id="admin-btn" class="text-btn hidden" style="color: var(--primary-color); border-color: var(--primary-color);">管理模块</button>
+				<button id="theme-toggle" class="icon-btn" title="切换主题">🌓</button>
+				<span id="user-email" class="user-email"></span>
+				<button id="logout-btn" class="text-btn">退出</button>
+			</div>
         </header>
 
         <div class="main-container">
@@ -81,6 +82,74 @@
             </div>
         </div>
     </div>
+	
+	<!-- 管理面板弹窗 -->
+<div id="admin-modal" class="modal hidden">
+    <div class="modal-content admin-modal-content">
+        <div class="modal-header">
+            <h3>模块管理</h3>
+            <button id="admin-close" class="icon-btn">✕</button>
+        </div>
+        <div class="admin-body">
+            <!-- 左侧表单 -->
+            <div class="admin-form-container">
+                <h4 id="form-title">新增模块</h4>
+                <form id="app-form">
+                    <input type="hidden" id="edit-id"> <!-- 隐藏字段，用于区分新增还是编辑 -->
+                    <div class="form-group">
+                        <label>应用名称 *</label>
+                        <input type="text" id="app-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>所属分组 *</label>
+                        <input type="text" id="app-group" required placeholder="如：💼 工作">
+                    </div>
+                    <div class="form-group">
+                        <label>图标 (Emoji 或 图片URL)</label>
+                        <input type="text" id="app-icon" placeholder="📦 或 https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>应用链接 *</label>
+                        <input type="url" id="app-url" required>
+                    </div>
+                    <div class="form-group">
+                        <label>打开方式</label>
+                        <select id="app-mode">
+                            <option value="new">新标签页打开 (推荐)</option>
+                            <option value="iframe">内嵌窗口打开</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>排序数字 (越小越靠前)</label>
+                        <input type="number" id="app-sort" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>最低可见权限</label>
+                        <select id="app-role">
+                            <option value="user">普通用户及以上</option>
+                            <option value="admin">仅限管理员</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>简短描述</label>
+                        <textarea id="app-desc" rows="2"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn">保存</button>
+                        <button type="button" id="btn-reset" class="text-btn">重置/新增</button>
+                    </div>
+                </form>
+            </div>
+            <!-- 右侧列表 -->
+            <div class="admin-list-container">
+                <h4>现有模块列表</h4>
+                <div id="admin-list" class="admin-list">
+                    <!-- 列表动态渲染 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- 引入 Supabase SDK 和 主逻辑 -->
     <script type="module" src="app.js"></script>
