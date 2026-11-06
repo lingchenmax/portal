@@ -85,11 +85,12 @@ async function loadUserData() {
     applyTheme(currentPrefs.theme);
 
     // 2. 判断是否为管理员 (注意先后顺序)
-    const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').maybeSingle();
+    const { data: roleData, error: roleError } = await supabase.from('user_roles').select('role').eq('user_id', currentUser.id).maybeSingle();
     
-    // 加一行日志方便以后调试
-    console.log('当前账号的角色数据:', roleData); 
-
+    console.log('当前登录的 User ID:', currentUser.id);
+    console.log('查询到的角色数据:', roleData);
+    if (roleError) console.error('查询角色报错:', roleError); // 如果有错，这里会明确打印出来
+    
     if (roleData && roleData.role === 'admin') {
         adminBtn.classList.remove('hidden'); // 是管理员，显示按钮
     } else {
